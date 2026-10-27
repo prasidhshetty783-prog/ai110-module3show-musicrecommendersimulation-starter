@@ -85,7 +85,8 @@ only what I ask in the current prompt.
   always earns half the genre weight) and a dict `MODES` with `balanced`
   (2.0 / 1.0 / 1.5 / 0.5 = the core recipe), `genre_first`, `mood_first`, and
   `energy_focused` (genre 1.0, energy 3.0 = the Phase 4 weight-shift experiment).
-  I pick the genre_first / mood_first weights in Phase 8. `score_song(..., mode=MODES["balanced"])` and
+  `mood_first` = genre 1.5 / mood 1.5 / energy 2.0 / acoustic 0.5 (decided in Phase 2).
+  I pick the genre_first weights in Phase 8. `score_song(..., mode=MODES["balanced"])` and
   `recommend_songs(..., mode=...)` take the mode. No if/elif chains on mode names
   inside the scoring code.
 - **Diversity penalty:** `recommend_songs(..., diversity=False)`. When True, pick songs

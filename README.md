@@ -41,6 +41,36 @@ Real platforms like Spotify and YouTube use hybrid filtering, which combines col
 | `target_energy` | `0.8` | Energy level to get close to (not "the higher the better") |
 | `likes_acoustic` | `False` | Whether acoustic songs should earn points or lose them |
 
+### Algorithm recipe
+
+`score_song` judges one song at a time and adds up points. Every point comes with a reason, so each recommendation can explain itself.
+
+| Factor | Points | Rule |
+|---|---|---|
+| Genre | **+2.0** exact match, **+1.0** related | "Related" means one genre name contains the other, like "pop" and "indie pop". |
+| Mood | **+1.0** | Exact match only. |
+| Energy | up to **+1.5** | `1.5 × (1 − \|song energy − target energy\|)`. Closer earns more, so being 0.1 too high costs the same as being 0.1 too low. |
+| Acoustic fit | up to **+0.5** | `0.5 × acousticness` if the user likes acoustic songs, `0.5 × (1 − acousticness)` if not. |
+
+The best possible score is 5.0. A preference the user doesn't set adds no points.
+
+### Data flow
+
+```mermaid
+flowchart LR
+    A["User preferences<br/>genre, mood, energy, acoustic"] --> B["Score every song<br/>score_song → score + reasons"]
+    C[("data/songs.csv<br/>20 songs")] --> B
+    B --> D["Rank<br/>sort high → low, ties by title"]
+    D --> E["Top K songs<br/>with explanations"]
+```
+
+### Biases I expect
+
+- **Genre outweighs everything else.** A genre match (2.0) is worth twice a mood match and more than a perfect energy match. A pop song with the wrong mood can beat a song that matches the mood, the energy and the acoustic preference but isn't labeled pop.
+- **Thin genres get a free pass.** 15 of the 17 genres have only one song, so that song earns the full +2.0 even when it fits the user's vibe badly.
+- **Mood matching is literal.** "melancholy" doesn't count as "sad", and "euphoric" doesn't count as "happy".
+- **Loud and electronic get counted twice.** Energy and acousticness still move together in this catalog (correlation −0.66), so a high-energy user who dislikes acoustic songs is rewarded twice for the same trait.
+
 ---
 
 ## Getting Started
