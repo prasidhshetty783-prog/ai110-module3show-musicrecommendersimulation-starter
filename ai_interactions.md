@@ -22,7 +22,7 @@
 
 **What did you verify or fix manually?**
 
-<!-- Describe anything the agent got wrong or that required human review -->
+Double-check moment: When I asked Claude to "stage CLAUDE.md and commit it," it refused based only on its reading of the "never commit" rule in CLAUDE.md. It never ran a git command, so the settings.json deny list was never actually tested. Claude also said the rule was "enforced in settings.json" before it had opened that file. I had to ask before it checked and confirmed the deny entries really exist (and that git add isn't blocked). The lesson: an AI saying a safeguard exists isn't proof it works, so check the config yourself.
 
 ---
 
