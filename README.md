@@ -17,17 +17,29 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Real platforms like Spotify and YouTube use hybrid filtering, which combines collaborative filtering (recommending what listeners with similar behavior enjoyed) with content-based filtering (recommending songs whose attributes resemble ones you already like). The **input data** is what the system knows about each song, such as its genre, mood, tempo, energy, and acousticness. The **user preferences** come from what a listener says and does: explicit signals like likes and playlist adds, and implicit signals like plays, skips, and replays. The **ranking** step scores every candidate song for how likely the listener is to enjoy it, sorts the list, and re-orders it for variety before showing the top results. VibeFinder is content-based only. It scores genre, mood, energy, and acousticness against one user's stated preferences. The tradeoff is that it can't learn from what a user actually plays or skips, and it can't discover cross-genre picks from other listeners' taste, so it only crosses genres when songs share attributes like energy.
 
-Some prompts to answer:
+### Features used in this simulation
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
+**`Song`** (one row of `data/songs.csv`)
 
-You can include a simple diagram or bullet list if helpful.
+| Feature | Type | Used for scoring? |
+|---|---|---|
+| `genre` | text | Yes |
+| `mood` | text | Yes |
+| `energy` | 0.0–1.0 | Yes |
+| `acousticness` | 0.0–1.0 | Yes |
+| `tempo_bpm`, `valence`, `danceability` | numbers | Loaded, not scored yet |
+| `id`, `title`, `artist` | labels | Shown in output only |
+
+**`UserProfile`** (one listener's stated taste)
+
+| Field | Example | Meaning |
+|---|---|---|
+| `favorite_genre` | `"pop"` | Genre the listener wants most |
+| `favorite_mood` | `"happy"` | Mood the listener wants |
+| `target_energy` | `0.8` | Energy level to get close to (not "the higher the better") |
+| `likes_acoustic` | `False` | Whether acoustic songs should earn points or lose them |
 
 ---
 
